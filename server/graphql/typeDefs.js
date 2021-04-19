@@ -25,7 +25,6 @@ module.exports = gql`
     addTodo(title: String!, content: String!, privacy: String!): Todo!
     updateTodo(
       id: Int!
-      userId: Int!
       title: String
       content: String
       privacy: String
