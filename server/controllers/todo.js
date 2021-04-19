@@ -35,38 +35,31 @@ exports.getTodo = async (_, __, { user }) => {
 
 exports.updateTodo = async (_, args, { user }) => {
   if (!user) throw new AuthenticationError("Unauthorized")
-  const { id, userId, title, content, privacy, status } = args
+  const { id, title, content, privacy, status } = args
   let error = null
   try {
-    console.log("Hello")
-    if (userId === user.id) {
-      let todoCheck = await Todo.findOne({
-        where: { id },
-      })
-      if (todoCheck) {
-        let todo = await Todo.update(
-          {
-            title,
-            content,
-            privacy,
-            status,
+    let todoCheck = await Todo.findOne({
+      where: { id },
+    })
+    if (todoCheck && todoCheck.userId == user.id) {
+      let todo = await Todo.update(
+        {
+          title,
+          content,
+          privacy,
+          status,
+        },
+        {
+          where: {
+            [Op.and]: [{ id }, { userId: user.id }],
           },
-          {
-            where: {
-              [Op.and]: [{ id }, { userId }],
-            },
-          },
-          { raw: true }
-        )
-        console.log(todo)
-        return todoCheck
-      } else {
-        error = "Todo not found"
-        throw new UserInputError("BAD_INPUT", { error })
-      }
+        },
+      )
+      console.log(todo)
+      return todoCheck
     } else {
-      error = "Unauthorized"
-      throw new AuthenticationError("Unauthenticated", { error })
+      error = "Todo not found"
+      throw new UserInputError("BAD_INPUT", { error })
     }
   } catch (err) {
     throw err
