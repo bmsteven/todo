@@ -1,3 +1,3 @@
 # todo
 
-A simple todo app made with graphql and react.
+A simple todo app made with nodejs, graphql and react.
